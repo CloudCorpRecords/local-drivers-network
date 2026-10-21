@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local Drivers Network — DUI Cost Calculator</title>
+<style>
+body { font-family: 'Segoe UI', 'Liberation Sans', Arial, sans-serif; background:#f4f7f5; color:#1a1a1a; margin:0; padding:24px 14px 40px; }
+.wrap { max-width: 760px; margin: 0 auto; }
+h1 { color:#0f3d2e; font-size: 26px; margin: 0 0 4px; }
+.sub { color:#444; margin: 0 0 18px; }
+.card { background:#fff; border:1px solid #cfd8d2; border-radius:10px; padding:18px 20px; margin-bottom:16px; }
+label { display:block; font-weight:600; margin:12px 0 4px; font-size:14px; }
+input, select { width:100%; padding:9px 10px; font-size:16px; border:1px solid #aebbb3; border-radius:6px; box-sizing:border-box; }
+.hint { font-size:12px; color:#666; margin-top:3px; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.stat { background:#eef4f0; border:1px solid #c9d4cd; border-radius:8px; padding:12px 14px; }
+.stat .v { font-size:22px; font-weight:700; color:#0f3d2e; }
+.stat .k { font-size:12.5px; color:#444; margin-top:2px; }
+.verdict { background:#0f3d2e; color:#fff; border-radius:8px; padding:14px 16px; font-size:16px; line-height:1.45; }
+.small { font-size:12px; color:#666; line-height:1.5; }
+a { color:#0f3d2e; }
+@media (max-width:560px){ .grid{grid-template-columns:1fr;} }
+</style></head>
+<body>
+<div class="wrap">
+<p style="margin:0 0 6px"><a href="index.html">&larr; Investor Summary</a></p>
+<h1>What is DUI costing your town?</h1>
+<p class="sub">Local Drivers Network — DUI Cost Calculator. Every default below comes from a published source (see notes). Adjust them to your town.</p>
+
+<div class="card">
+<label for="pop">Town population</label>
+<input id="pop" type="number" value="12000" min="1000" step="500">
+<div class="hint">Local Drivers Network serves towns of 5,000–40,000.</div>
+
+<label for="rate">DUI arrests per 1,000 residents per year</label>
+<input id="rate" type="number" value="3.1" min="0" step="0.1">
+<div class="hint">US average: 3.1 (FBI: 1,031,812 DUI arrests in 2021). Non-metro rates run comparable or higher.</div>
+
+<label for="cost">Public cost to process ONE DUI (arrest, testing, jail, court, prosecution, defense)</label>
+<select id="cost">
+<option value="1500">$1,500 — the project's conservative pitch figure</option>
+<option value="2721" selected>~$2,700 — California courts study (NIJ), inflation-adjusted to 2026</option>
+<option value="6470">$6,470 — Washington State Criminal Justice Cost Model (2023)</option>
+</select>
+
+<label for="fee">Local Drivers Network fee (per month)</label>
+<input id="fee" type="number" value="1000" min="0" step="50">
+</div>
+
+<div class="grid">
+<div class="stat"><div class="v" id="duis">—</div><div class="k">Estimated DUI arrests per year in your town</div></div>
+<div class="stat"><div class="v" id="burden">—</div><div class="k">Public money spent processing those DUIs, per year (before any crash costs)</div></div>
+<div class="stat"><div class="v" id="hours">—</div><div class="k">Officer hours per year consumed by DUI processing (at 2–6 hours per DUI)</div></div>
+<div class="stat"><div class="v" id="breakeven">—</div><div class="k">DUIs per year the service must prevent to pay for itself</div></div>
+</div>
+
+<p class="verdict" id="verdict">—</p>
+
+<div class="card">
+<div class="small">
+<b>How towns pay:</b> at $1,000/month the service costs $12,000/year — below most municipal RFP thresholds. Funding channels include NHTSA highway-safety grants through state safety offices ($800M+ approved for FY2026, impaired-driving countermeasures included) and offender cost recovery: Grass Valley, CA already charges DUI offenders $2.00 per minute of police response, which at ~37 DUIs/year recovers roughly $13,300/year — enough to cover this fee on its own.<br><br>
+<b>Proof it works:</b> Wisconsin's Road Crew ride-home program cut alcohol-related crashes 17% in three rural communities at $15,300 per avoided crash, vs. an average alcohol-crash cost of ~$56,000. The Tavern League of Wisconsin SafeRide program has given 1M+ rides since 2004.<br><br>
+<b>Sources:</b> FBI Uniform Crime Reporting (2021); US Office of Justice Programs / NIJ, "Public Costs of DUI Processing: A Study in the California Municipal Courts"; Washington State Caseload Forecast Council Criminal Justice Cost Model (2023); University of Wisconsin / WisDOT Road Crew evaluation; City of Grass Valley fee schedule FY2024-25; NHTSA. Full evidence index: <i>proofs/PROOFS.md</i> in the project repository. This calculator produces planning estimates, not audited figures.
+</div>
+</div>
+</div>
+
+<script>
+function fmt(n){ return n.toLocaleString('en-US'); }
+function money(n){ return '$' + fmt(Math.round(n)); }
+function calc(){
+  var pop = parseFloat(document.getElementById('pop').value) || 0;
+  var rate = parseFloat(document.getElementById('rate').value) || 0;
+  var cost = parseFloat(document.getElementById('cost').value) || 0;
+  var fee = parseFloat(document.getElementById('fee').value) || 0;
+  var duis = pop * rate / 1000;
+  var burden = duis * cost;
+  var annualFee = fee * 12;
+  var be = cost > 0 ? annualFee / cost : 0;
+  document.getElementById('duis').textContent = fmt(Math.round(duis));
+  document.getElementById('burden').textContent = money(burden);
+  document.getElementById('hours').textContent = fmt(Math.round(duis*2)) + '–' + fmt(Math.round(duis*6));
+  document.getElementById('breakeven').textContent = be < 1 ? 'Less than 1' : '~' + Math.ceil(be);
+  var ratio = annualFee > 0 ? burden / annualFee : 0;
+  document.getElementById('verdict').textContent =
+    'Your town spends an estimated ' + money(burden) + ' a year just processing DUIs — about ' +
+    ratio.toFixed(1) + 'x the ' + money(annualFee) + ' annual cost of a Local Drivers Network. ' +
+    'Preventing ' + (be < 1 ? 'less than one DUI a year' : 'about ' + Math.ceil(be) + ' DUIs a year') +
+    ' covers the entire fee — before counting a single avoided crash (average cost ~$56,000).';
+}
+['pop','rate','cost','fee'].forEach(function(id){ document.getElementById(id).addEventListener('input', calc); });
+calc();
+</script>
+</body></html>

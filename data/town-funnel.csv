@@ -1,0 +1,9 @@
+step,count_low,count_mid,count_high,basis
+"All incorporated places in the US",19500,19500,19500,"US Census Bureau"
+"Population under 5000 (excluded)",14800,14800,14800,"US Census Bureau (~76% of incorporated places)"
+"Population 50000+ (excluded)",780,780,780,"US Census Bureau (4.0%)"
+"TARGET BAND: population 5000-40000",3500,3700,3900,"Calculated from Census distribution"
+"Also 1+ hour from a major city",900,1150,1400,"Modeled: 542 micropolitan anchor towns + in-band non-metro towns"
+"Also passes need screen (no taxi, no reliable rideshare, DUI problem)",550,700,850,"Modeled from distance-qualified set; SC data point: 38% of incorporated towns had zero TNC trips in 2.5 yrs"
+"Serviceable market revenue ceiling at $12000/yr per town (USD ARR)",6600000,8400000,10200000,"Towns x $12000"
+"Absolute ceiling: all in-band towns (USD ARR)",42000000,44400000,46800000,"Towns x $12000"

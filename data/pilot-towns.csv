@@ -1,0 +1,3 @@
+town,state,population,distance_reference,records_agencies_contacted,records_fees_paid_usd,notes
+Grass Valley,CA,12000,"~1 hr from Sacramento","Local police; Sheriff's Department; Highway Patrol",0,"Uber drivers left for Sacramento (per project). City fee schedule: police record request $5 first 10 pages + $0.25/page; DUI investigation charged at $2.00/minute of response time."
+Nevada City,CA,6000,"~1 hr from Sacramento","Local police; Sheriff's Department; Highway Patrol",0,"Chief of Police Dan Foss estimate: officers spend 2-6 hours per DUI. Nevada County Sheriff report copies: $5 first page + $0.50/page."
